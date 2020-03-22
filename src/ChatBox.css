@@ -1,0 +1,19 @@
+.chat {
+    height: 95vh;
+    width: 600px;
+    margin: 20px auto;
+}
+
+.chat-messages {
+    background-color: #FFF;
+    max-height: calc(95vh - 56px);
+    height: calc(95vh - 56px);
+    overflow-y: scroll;
+}
+
+.chat-input {
+    position: absolute;
+    bottom: 20px;
+    width: inherit;
+    background-color: #dde5e2;
+}
