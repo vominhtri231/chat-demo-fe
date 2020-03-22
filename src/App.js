@@ -9,7 +9,7 @@ function App() {
     <BrowserRouter>
       <Switch>
         <Route path="/" component={UserRegister} exact />
-        <Route path="/chat" render={() => <ChatBox username={localStorage.getItem("username")} />} />
+        <Route path="/chat" render={() => <ChatBox username={sessionStorage.getItem("username")} />} />
       </Switch>
     </BrowserRouter>
   );

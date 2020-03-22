@@ -16,7 +16,7 @@ class UserRegister extends React.Component {
 
     registerUser = (event) => {
         if (event.keyCode === 13) {
-            localStorage.setItem("username", this.state.username);
+            sessionStorage.setItem("username", this.state.username);
             this.props.history.push("/chat");
         }
     }

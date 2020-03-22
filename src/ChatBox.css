@@ -14,6 +14,16 @@
 .chat-input {
     position: absolute;
     bottom: 20px;
-    width: inherit;
     background-color: #dde5e2;
+    width: inherit;
+    height: 56px;
+}
+
+.chat-input > :first-child {
+    width: inherit;
+    height: 100%;
+}
+
+.chat-input input {
+    margin: 10px;
 }

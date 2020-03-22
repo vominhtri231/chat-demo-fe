@@ -2,7 +2,11 @@ import React from 'react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import TextField from "@material-ui/core/TextField"
+import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SendIcon from '@material-ui/icons/Send'
+import FormControl from '@material-ui/core/FormControl';
 
 import './ChatBox.css'
 
@@ -11,7 +15,7 @@ const beUrl = "ws://localhost:8080/chat-be/chat/";
 class ChatBox extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             currentMessage: "",
             messages: [],
@@ -25,25 +29,35 @@ class ChatBox extends React.Component {
         this.setState({ socket })
     }
 
-    receiveMessage = (event) => {
-        const addedMessage = JSON.parse(event.data);
-        const currentMessages = this.state.messages;
-        this.setState({ messages: [...currentMessages, addedMessage] });
-    }
-
-    sendMessage = (event) => {
+    handleKeyChange = (event) => {
         if (event.keyCode === 13) {
-            const { socket, currentMessage } = this.state;
-            socket.send(JSON.stringify({
-                content: currentMessage,
-                from: this.props.username
-            }));
-            this.setState({ currentMessage: "" });
+            this.sendMessage();
         }
     }
 
     currentMessageChangeHandler = (event) => {
         this.setState({ currentMessage: event.target.value });
+    }
+
+    receiveMessage = (event) => {
+        const addedMessage = JSON.parse(event.data);
+        const currentMessages = this.state.messages;
+        this.setState({ messages: [...currentMessages, addedMessage] });
+        if (!!this.messagesEnd) {
+            this.messagesEnd.scrollIntoView({ behavior: 'smooth' })
+        }
+    }
+
+    sendMessage = () => {
+        const { socket, currentMessage } = this.state;
+        if (!currentMessage || currentMessage.length === 0) {
+            return;
+        }
+        socket.send(JSON.stringify({
+            content: currentMessage,
+            from: this.props.username
+        }));
+        this.setState({ currentMessage: "" });
     }
 
     render() {
@@ -52,6 +66,7 @@ class ChatBox extends React.Component {
             <div class="chat">
                 <List class="chat-messages"> {messages.map((message, index) => {
                     return <ListItem key={index}>
+
                         <ListItemText
                             primary={message.from}
                             secondary={
@@ -61,10 +76,22 @@ class ChatBox extends React.Component {
                         />
                     </ListItem>
                 })}
+                    <div ref={(e) => { this.messagesEnd = e; }} />
                 </List>
+                <FormControl variant="outlined" class="chat-input" fullWidth>
+                    <Input
+                        value={currentMessage}
+                        onChange={this.currentMessageChangeHandler}
+                        onKeyDown={this.handleKeyChange}
 
-                <TextField value={currentMessage} onChange={this.currentMessageChangeHandler} onKeyDown={this.sendMessage}
-                    class="chat-input" variant="outlined" fullWidth />
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton color="primary" onClick={this.sendMessage}>
+                                    <SendIcon />
+                                </IconButton>
+                            </InputAdornment>}
+                    />
+                </FormControl>
             </div>
         )
     }
